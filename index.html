@@ -1,12 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quill 2.0 Emoji Module - 强力修复版</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emoji-mart@5.6.0/dist/browser.min.js"></script>
+  <link rel="stylesheet" href="./dist/emoji.css">
+   <script src="./dist/emoji.umd.cjs"></script>
+</head>
+
 <body>
-  <div id="app"></div>
-  <script type="module" src="/src/index.ts"></script>
+  <div id="editor"></div>
+
+  <script type="module">
+    // 注册 Quill 模块
+    Quill.register('modules/emoji', Emoji);
+
+    // 初始化编辑器
+    globalQuill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'header': 1 }, { 'header': 2 }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'script': 'sub' }, { 'script': 'super' }],
+          [{ 'indent': '-1' }, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['clean', 'link', 'image', 'video', {emoji: []}]
+        ],
+        emoji: true
+      },
+      placeholder: '在这里输入文本，点击工具栏的表情符号按钮体验 emoji-mart 组件...'
+    });
+  </script>
 </body>
+
 </html>

@@ -16,11 +16,12 @@ export default defineConfig({
       fileName: packageName,
     },
     rollupOptions: {
-      external: ['quill', 'emoji-mart'],
+      external: ['quill', 'emoji-mart', '@emoji-mart/data'],
       output: {
         globals: {
           'quill': 'Quill',
           'emoji-mart': 'EmojiMart',
+          '@emoji-mart/data': '@emoji-mart/data',
         },
       },
     },
