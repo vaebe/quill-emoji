@@ -1,26 +1,33 @@
 {
-  "name": "vite-vanilla-library",
-  "version": "0.0.0",
+  "name": "@quill-modules/emoji",
   "type": "module",
+  "version": "0.0.0",
   "exports": {
     ".": {
-      "import": "./dist/vite-vanilla-library.js",
-      "require": "./dist/vite-vanilla-library.cjs"
+      "import": "./dist/emoji.js",
+      "require": "./dist/emoji.cjs"
     }
   },
-  "main": "./dist/vite-vanilla-library.cjs",
-  "module": "./dist/vite-vanilla-library.js",
-  "types": "./dist/vite-vanilla-library.d.ts",
-  "files": ["dist"],
+  "main": "./dist/emoji.cjs",
+  "module": "./dist/emoji.js",
+  "types": "./dist/emoji.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "release": "pnpm test && pnpm build && changelogen --release --push && pnpm publish",
     "lint": "eslint . --fix",
     "test": "vitest --run",
     "test:watch": "vitest",
     "test:coverage": "vitest --coverage",
     "prepare": "husky install"
+  },
+  "dependencies": {
+    "@emoji-mart/data": "^1.2.1",
+    "emoji-mart": "^5.6.0",
+    "quill": "^2.0.3"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.16.0",

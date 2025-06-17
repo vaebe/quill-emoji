@@ -1,53 +1,133 @@
-# Vite Vanilla Library Template
+# Quill Emoji Module
 
-Template for creating a library with a fully customized environment.
+这是一个为 Quill 2.0 编辑器开发的表情符号模块，使用 emoji-mart 作为表情选择器。
 
-## Features
+## 特性
 
-* ✨ Fully customized [eslint](https://eslint.org/) configuration based on the config by [Antfu](https://github.com/antfu/eslint-config)
-* 🧪 Write tests quickly and conveniently with [vitest](https://vitest.dev/)
-* 🤝 Supports [conventional commits](https://www.conventionalcommits.org/)
-* 💅 Generate beautiful changelogs with [changelogen](https://github.com/unjs/changelogen)
-* ♾️ GitHub CI for your build
-* 📢 Issue templates
-* 📝 Pull request template
-* 🤖 Ready configuration for [renovatebot](https://github.com/apps/renovate) with [renovate-config](https://github.com/hywax/renovate-config)
-* 🚀 Library releases with just one command
+* ✨ 完全支持 Quill 2.0
+* 🎨 使用 emoji-mart 作为表情选择器 UI
+* 📱 响应式设计，适配移动设备
+* 🔄 多种表情选择方式
+* 🎭 可自定义主题和样式
+* 🔧 使用 TypeScript 开发
 
-## Get started
+## 安装
 
-### GitHub Template
-
-This is a template repo. Click the green [Use this template](https://github.com/hywax/vite-vanilla-library-template/generate) button to get started.
-
-### Git Clone
-
-```shell
-git clone https://github.com/hywax/vite-vanilla-library-template.git
-cd vite-vanilla-library-template
-pnpm install
+```bash
+npm install @quill-modules/emoji emoji-mart
+# 或
+yarn add @quill-modules/emoji emoji-mart
+# 或
+pnpm add @quill-modules/emoji emoji-mart
 ```
 
-## Usage
+## 使用方法
 
-The template contains the following scripts:
+### 基本用法
 
-* `dev` - Start the development server
-* `build` - Build for production
-* `release` - Generate changelog and npm publish
-* `lint` - Checks your code for any linting errors
-* `test` - Run all tests
-* `test:watch` - Run all tests with watch mode
-* `test:coverage` - Run all tests with code coverage report
-* `prepare` - Script for setting up husky hooks
+```html
+<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/emoji-mart@5.6.0/dist/browser.min.js"></script>
+<script src="path/to/quill-emoji.js"></script>
 
-## Used by
+<div id="editor"></div>
 
-* [vitepress-yandex-metrika](https://github.com/hywax/vitepress-yandex-metrika)
-* [gotify-client](https://github.com/hywax/gotify-client)
-* [lxc-idmapper](https://github.com/hywax/lxc-idmapper)
+<script>
+  const quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: {
+        container: [
+          ['bold', 'italic', 'underline'],
+          ['emoji']
+        ]
+      },
+      emoji: {
+        // 配置选项
+        theme: 'light',
+        locale: 'zh',
+        set: 'native'
+      }
+    }
+  });
+</script>
+```
 
-If you are using this template, feel free to open a PR to add your project to the list.
+### 使用 ES 模块
+
+```javascript
+import QuillEmojiModule from '@quill-modules/emoji'
+import Quill from 'quill'
+
+// 注册模块
+Quill.register('modules/emoji', QuillEmojiModule)
+
+const quill = new Quill('#editor', {
+  // 配置...
+  modules: {
+    // ...
+    emoji: {
+      // 配置选项
+    }
+  }
+})
+```
+
+## 配置选项
+
+| 选项 | 类型 | 默认值 | 描述 |
+|------|------|--------|------|
+| theme | string | 'light' | emoji-mart 主题，可选 'light' 或 'dark' |
+| locale | string | 'zh' | 语言设置 |
+| set | string | 'native' | 表情集，可选 'native', 'apple', 'google', 'twitter', 'facebook' |
+| skinTonePosition | string | 'none' | 肤色选择器位置 |
+| previewPosition | string | 'bottom' | 预览位置 |
+| searchPosition | string | 'sticky' | 搜索框位置 |
+| categories | string[] | ['frequent', ...] | 要显示的分类 |
+| maxFrequentRows | number | 2 | 常用表情的最大行数 |
+| perLine | number | 8 | 每行显示的表情数量 |
+| navPosition | string | 'top' | 导航栏位置 |
+| noCountryFlags | boolean | false | 是否隐藏国旗表情 |
+| dynamicWidth | boolean | true | 是否使用动态宽度 |
+
+## API
+
+### 方法
+
+```javascript
+// 获取模块实例
+const emojiModule = quill.getModule('emoji')
+
+// 插入表情
+emojiModule.insertEmoji('😀')
+
+// 手动显示表情选择器
+emojiModule.showEmojiPickerManually()
+
+// 销毁模块（清理事件和DOM元素）
+emojiModule.destroy()
+```
+
+## 示例
+
+查看 `examples` 目录中的示例文件。
+
+## 构建项目
+
+```bash
+# 安装依赖
+pnpm install
+
+# 开发模式
+pnpm dev
+
+# 构建
+pnpm build
+
+# 运行测试
+pnpm test
+```
 
 ## License
 
