@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quill 2.0 Emoji Module - 强力修复版</title>
+   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css">
+   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/emoji-mart@5.6.0/dist/browser.min.js"></script>
+   
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .editor-container {
+            padding: 20px;
+        }
+        
+        #editor {
+            height: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .ql-emoji {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px;
+            width: auto;
+            height: auto;
+        }
+        
+        .ql-emoji::before {
+            content: '😀';
+            font-size: 16px;
+        }
+        
+        .ql-emoji:hover {
+            background-color: #f0f0f0;
+            border-radius: 3px;
+        }
+        
+        .emoji-picker-container {
+            position: absolute;
+            z-index: 1000;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .emoji-picker-container.show {
+            opacity: 1;
+        }
+        
+        /* 自定义 emoji-mart 样式 */
+        em-emoji-picker {
+            --rgb-accent: 102, 126, 234;
+            --rgb-background: 255, 255, 255;
+            --rgb-input: 255, 255, 255;
+            --color-border: rgba(0, 0, 0, 0.1);
+            --color-border-over: rgba(102, 126, 234, 0.4);
+            --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .emoji-picker-container {
+                position: fixed !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+            }
+            
+            em-emoji-picker {
+                width: 90vw;
+                max-width: 320px;
+                height: 60vh;
+                max-height: 400px;
+            }
+        }
+        
+        .debug-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #666;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .test-buttons {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .test-button {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .test-button:hover {
+            background: #5a67d8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quill 2.0 + emoji-mart - 强力修复版</h1>
+            <p>使用多种方法确保表情插入功能正常工作</p>
+        </div>
+        <div class="editor-container">
+            <div id="editor"></div>
+            <div class="test-buttons">
+                <button class="test-button" onclick="testInsertEmoji()">测试插入 🎉</button>
+                <button class="test-button" onclick="clearDebug()">清除调试信息</button>
+                <button class="test-button" onclick="showEmojiPicker()">手动打开表情选择器</button>
+            </div>
+            <div class="debug-info" id="debug-info">
+                等待操作...<br>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        let globalQuill;
+        let globalEmojiModule;
+        
+        // 调试信息显示
+        function addDebugInfo(message) {
+            const debugDiv = document.getElementById('debug-info');
+            const time = new Date().toLocaleTimeString();
+            const newMessage = `<div style="margin-bottom: 3px;">[${time}] ${message}</div>`;
+            debugDiv.innerHTML += newMessage;
+            debugDiv.scrollTop = debugDiv.scrollHeight;
+        }
+        
+        // 全局测试函数
+        window.testInsertEmoji = function() {
+            if (globalEmojiModule) {
+                addDebugInfo('手动测试插入表情');
+                globalEmojiModule.insertEmoji('🎉');
+            }
+        };
+        
+        window.clearDebug = function() {
+            document.getElementById('debug-info').innerHTML = '调试信息已清除<br>';
+        };
+        
+        window.showEmojiPicker = function() {
+            if (globalEmojiModule) {
+                globalEmojiModule.showEmojiPicker();
+            }
+        };
+        
+        // Quill 2.0 Emoji Module 使用 emoji-mart UI
+        class QuillEmojiModule {
+            static DEFAULTS = {
+                theme: 'light',
+                locale: 'zh',
+                set: 'native',
+                skinTonePosition: 'none',
+                previewPosition: 'bottom',
+                searchPosition: 'sticky',
+                categories: ['frequent', 'people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols', 'flags'],
+                maxFrequentRows: 2,
+                perLine: 8,
+                navPosition: 'top',
+                noCountryFlags: false,
+                dynamicWidth: true
+            };
+            
+            constructor(quill, options = {}) {
+                this.quill = quill;
+                this.options = { ...QuillEmojiModule.DEFAULTS, ...options };
+                this.picker = null;
+                this.pickerContainer = null;
+                this.isPickerVisible = false;
+                this.currentSelection = null;
+                this.observer = null;
+                this.clickHandler = null;
+                
+                addDebugInfo('EmojiModule 初始化开始');
+                this.init();
+            }
+            
+            init() {
+                this.createEmojiButton();
+                this.createEmojiPickerContainer();
+                this.bindEvents();
+                addDebugInfo('EmojiModule 初始化完成');
+            }
+            
+            createEmojiButton() {
+                const toolbar = this.quill.getModule('toolbar');
+                if (toolbar && toolbar.container) {
+                    const button = document.createElement('button');
+                    button.className = 'ql-emoji';
+                    button.type = 'button';
+                    button.title = '插入表情符号';
+                    
+                    toolbar.container.appendChild(button);
+                    
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        addDebugInfo('表情按钮被点击');
+                        this.currentSelection = this.quill.getSelection();
+                        addDebugInfo(`保存的光标位置: ${this.currentSelection ? this.currentSelection.index : 'null'}`);
+                        this.toggleEmojiPicker();
+                    });
+                    
+                    addDebugInfo('表情按钮已创建');
+                }
+            }
+            
+            createEmojiPickerContainer() {
+                this.pickerContainer = document.createElement('div');
+                this.pickerContainer.className = 'emoji-picker-container';
+                document.body.appendChild(this.pickerContainer);
+                addDebugInfo('表情选择器容器已创建');
+            }
+            
+            async createEmojiPicker() {
+                if (this.picker) return;
+                
+                try {
+                    addDebugInfo('开始创建 emoji-mart picker');
+                    
+                    // 创建 emoji-mart 组件
+                    this.picker = document.createElement('em-emoji-picker');
+                    
+                    // 设置属性
+                    Object.entries(this.options).forEach(([key, value]) => {
+                        if (typeof value === 'boolean') {
+                            if (value) this.picker.setAttribute(key, '');
+                        } else if (Array.isArray(value)) {
+                            this.picker.setAttribute(key, JSON.stringify(value));
+                        } else {
+                            this.picker.setAttribute(key, value.toString());
+                        }
+                    });
+                    
+                    this.pickerContainer.appendChild(this.picker);
+                    
+                    // 等待 Shadow DOM 加载
+                    let attempts = 0;
+                    const maxAttempts = 50;
+                    
+                    while (!this.picker.shadowRoot && attempts < maxAttempts) {
+                        await new Promise(resolve => setTimeout(resolve, 100));
+                        attempts++;
+                    }
+                    
+                    if (this.picker.shadowRoot) {
+                        addDebugInfo(`Shadow DOM 加载完成 (尝试 ${attempts + 1} 次)`);
+                        this.setupEmojiEvents();
+                    } else {
+                        addDebugInfo('Shadow DOM 加载失败，使用备用方案');
+                        this.setupFallbackEvents();
+                    }
+                    
+                    addDebugInfo('emoji-mart picker 创建完成');
+                    
+                } catch (error) {
+                    addDebugInfo(`创建 emoji-mart picker 失败: ${error.message}`);
+                    console.error('创建 emoji-mart picker 失败:', error);
+                }
+            }
+            
+            setupEmojiEvents() {
+                // 方法1: 监听标准事件
+                const eventTypes = ['em-emoji-select', 'emoji-select', 'select', 'click'];
+                eventTypes.forEach(eventType => {
+                    this.picker.addEventListener(eventType, (event) => {
+                        addDebugInfo(`捕获到事件: ${eventType}`);
+                        this.handleEmojiSelect(event);
+                    });
+                });
+                
+                // 方法2: 使用 MutationObserver 监听 DOM 变化
+                this.observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.type === 'childList') {
+                            this.bindEmojiButtons();
+                        }
+                    });
+                });
+                
+                if (this.picker.shadowRoot) {
+                    this.observer.observe(this.picker.shadowRoot, {
+                        childList: true,
+                        subtree: true,
+                        attributes: true
+                    });
+                }
+                
+                // 方法3: 定期检查并绑定按钮
+                this.bindEmojiButtons();
+                setInterval(() => {
+                    if (this.isPickerVisible) {
+                        this.bindEmojiButtons();
+                    }
+                }, 1000);
+            }
+            
+            setupFallbackEvents() {
+                // 备用方案：直接在容器上监听点击事件
+                this.clickHandler = (event) => {
+                    const target = event.target;
+                    if (target && target.textContent) {
+                        const text = target.textContent.trim();
+                        // 检查是否是表情符号
+                        if (/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F700}-\u{1F77F}]|[\u{1F780}-\u{1F7FF}]|[\u{1F800}-\u{1F8FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(text)) {
+                            addDebugInfo(`备用方案捕获表情: ${text}`);
+                            this.insertEmoji(text);
+                            this.hideEmojiPicker();
+                        }
+                    }
+                };
+                
+                this.pickerContainer.addEventListener('click', this.clickHandler);
+            }
+            
+            bindEmojiButtons() {
+                if (!this.picker || !this.picker.shadowRoot) return;
+                
+                // 查找所有可能的表情按钮
+                const selectors = [
+                    'button[data-emoji]',
+                    'button[title]',
+                    '.emoji',
+                    '[role="button"]',
+                    'button'
+                ];
+                
+                selectors.forEach(selector => {
+                    const buttons = this.picker.shadowRoot.querySelectorAll(selector);
+                    buttons.forEach(button => {
+                        if (!button.hasAttribute('data-emoji-bound')) {
+                            button.setAttribute('data-emoji-bound', 'true');
+                            
+                            button.addEventListener('click', (e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                
+                                const emoji = this.extractEmojiFromButton(button);
+                                if (emoji) {
+                                    addDebugInfo(`按钮点击获取表情: ${emoji}`);
+                                    this.insertEmoji(emoji);
+                                    this.hideEmojiPicker();
+                                }
+                            });
+                        }
+                    });
+                });
+            }
+            
+            extractEmojiFromButton(button) {
+                // 尝试多种方式提取表情
+                const methods = [
+                    () => button.textContent?.trim(),
+                    () => button.innerText?.trim(),
+                    () => button.getAttribute('data-emoji'),
+                    () => button.getAttribute('title'),
+                    () => button.dataset?.emoji,
+                    () => {
+                        const span = button.querySelector('span');
+                        return span ? span.textContent?.trim() : null;
+                    }
+                ];
+                
+                for (const method of methods) {
+                    try {
+                        const result = method();
+                      
+                        return result;
+                    } catch (e) {
+                        // 忽略错误，继续尝试下一种方法
+                    }
+                }
+                
+                return null;
+            }
+            
+            handleEmojiSelect(event) {
+                let emoji = null;
+                
+                // 尝试从事件中提取表情
+                if (event.detail) {
+                    emoji = event.detail.native || 
+                           event.detail.emoji?.native || 
+                           event.detail.unified ||
+                           (typeof event.detail === 'string' ? event.detail : null);
+                }
+                
+                if (!emoji && event.target) {
+                    emoji = this.extractEmojiFromButton(event.target);
+                }
+                
+                addDebugInfo(`事件处理获取表情: ${emoji || 'null'}`);
+                
+                if (emoji) {
+                    this.insertEmoji(emoji);
+                    this.hideEmojiPicker();
+                }
+            }
+            
+            async toggleEmojiPicker() {
+                if (this.isPickerVisible) {
+                    this.hideEmojiPicker();
+                } else {
+                    await this.showEmojiPicker();
+                }
+            }
+            
+            async showEmojiPicker() {
+                if (!this.picker) {
+                    await this.createEmojiPicker();
+                }
+                
+                if (!this.picker) return;
+                
+                const toolbar = this.quill.getModule('toolbar');
+                const emojiButton = toolbar.container.querySelector('.ql-emoji');
+                
+                if (emojiButton) {
+                    const rect = emojiButton.getBoundingClientRect();
+                    const pickerWidth = 352;
+                    const pickerHeight = 435;
+                    
+                    let left = rect.left;
+                    let top = rect.bottom + 5;
+                    
+                    if (left + pickerWidth > window.innerWidth) {
+                        left = window.innerWidth - pickerWidth - 10;
+                    }
+                    
+                    if (top + pickerHeight > window.innerHeight) {
+                        top = rect.top - pickerHeight - 5;
+                    }
+                    
+                    if (top < 0) {
+                        top = 10;
+                    }
+                    
+                    if (window.innerWidth <= 768) {
+                        this.pickerContainer.style.position = 'fixed';
+                        this.pickerContainer.style.top = '50%';
+                        this.pickerContainer.style.left = '50%';
+                        this.pickerContainer.style.transform = 'translate(-50%, -50%)';
+                    } else {
+                        this.pickerContainer.style.position = 'absolute';
+                        this.pickerContainer.style.left = left + 'px';
+                        this.pickerContainer.style.top = top + 'px';
+                        this.pickerContainer.style.transform = 'none';
+                    }
+                    
+                    this.pickerContainer.style.display = 'block';
+                    this.isPickerVisible = true;
+                    
+                    requestAnimationFrame(() => {
+                        this.pickerContainer.classList.add('show');
+                    });
+                    
+                    // 延迟绑定事件，确保组件完全渲染
+                    setTimeout(() => {
+                        this.bindEmojiButtons();
+                    }, 500);
+                    
+                    addDebugInfo('表情选择器已显示');
+                }
+            }
+            
+            hideEmojiPicker() {
+                if (this.pickerContainer) {
+                    this.pickerContainer.classList.remove('show');
+                    setTimeout(() => {
+                        this.pickerContainer.style.display = 'none';
+                    }, 200);
+                    this.isPickerVisible = false;
+                    addDebugInfo('表情选择器已隐藏');
+                }
+            }
+            
+            insertEmoji(emoji) {
+                addDebugInfo(`准备插入表情: ${emoji}`);
+                
+                try {
+                    let range = this.currentSelection || this.quill.getSelection(true);
+                    
+                    if (!range) {
+                        const length = this.quill.getLength();
+                        range = { index: Math.max(0, length - 1), length: 0 };
+                        addDebugInfo(`没有选择位置，插入到末尾: ${range.index}`);
+                    }
+                    
+                    this.quill.insertText(range.index, emoji, 'user');
+                    
+                    const newPosition = range.index + emoji.length;
+                    this.quill.setSelection(newPosition, 0);
+                    this.quill.focus();
+                    
+                    addDebugInfo(`✅ 表情插入成功，新位置: ${newPosition}`);
+                    
+                    this.currentSelection = null;
+                    
+                } catch (error) {
+                    addDebugInfo(`❌ 插入表情失败: ${error.message}`);
+                    console.error('插入表情失败:', error);
+                }
+            }
+            
+            bindEvents() {
+                document.addEventListener('click', (e) => {
+                    if (this.isPickerVisible && 
+                        !this.pickerContainer.contains(e.target) && 
+                        !e.target.classList.contains('ql-emoji')) {
+                        this.hideEmojiPicker();
+                    }
+                });
+                
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && this.isPickerVisible) {
+                        this.hideEmojiPicker();
+                    }
+                });
+                
+                window.addEventListener('resize', () => {
+                    if (this.isPickerVisible) {
+                        this.hideEmojiPicker();
+                    }
+                });
+                
+                this.quill.on('selection-change', (range) => {
+                    if (range && !this.isPickerVisible) {
+                        this.currentSelection = range;
+                    }
+                });
+                
+                addDebugInfo('事件绑定完成');
+            }
+            
+            destroy() {
+                if (this.observer) {
+                    this.observer.disconnect();
+                }
+                
+                if (this.clickHandler && this.pickerContainer) {
+                    this.pickerContainer.removeEventListener('click', this.clickHandler);
+                }
+                
+                if (this.pickerContainer) {
+                    document.body.removeChild(this.pickerContainer);
+                }
+                
+                const toolbar = this.quill.getModule('toolbar');
+                const emojiButton = toolbar.container.querySelector('.ql-emoji');
+                if (emojiButton) {
+                    emojiButton.remove();
+                }
+                
+                addDebugInfo('EmojiModule 已销毁');
+            }
+        }
+        
+        // 注册 Quill 模块
+        Quill.register('modules/emoji', QuillEmojiModule);
+        
+        // 初始化编辑器
+        globalQuill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline', 'strike'],
+                    ['blockquote', 'code-block'],
+                    [{ 'header': 1 }, { 'header': 2 }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'font': [] }],
+                    [{ 'align': [] }],
+                    ['clean', 'link', 'image', 'video']
+                ],
+                emoji: {
+                    theme: 'light',
+                    locale: 'zh',
+                    set: 'native',
+                    skinTonePosition: 'none',
+                    previewPosition: 'bottom',
+                    searchPosition: 'sticky',
+                    categories: ['frequent', 'people', 'nature', 'foods', 'activity', 'places', 'objects', 'symbols'],
+                    maxFrequentRows: 2,
+                    perLine: 9,
+                    navPosition: 'top',
+                    dynamicWidth: true
+                }
+            },
+            placeholder: '在这里输入文本，点击工具栏的表情符号按钮体验 emoji-mart 组件...'
+        });
+        
+        // 获取 emoji 模块实例
+        globalEmojiModule = globalQuill.getModule('emoji');
+        
+        // 添加示例内容
+        globalQuill.setContents([
+            { insert: '🔧 强力修复版 emoji-mart 集成:\n\n' },
+            { insert: '✅ 多重事件监听机制\n' },
+            { insert: '✅ MutationObserver DOM 监听\n' },
+            { insert: '✅ 定期按钮绑定检查\n' },
+            { insert: '✅ 多种表情提取方法\n' },
+            { insert: '✅ 备用点击事件处理\n' },
+            { insert: '✅ 详细的调试信息\n' },
+            { insert: '✅ 手动测试按钮\n\n' },
+            { insert: '现在点击工具栏的 😀 按钮或使用测试按钮试试看！\n\n' },
+            { insert: '测试表情: ' }
+        ]);
+        
+        addDebugInfo('编辑器初始化完成');
+        addDebugInfo('请点击表情按钮或测试按钮');
+    </script>
+</body>
+</html>
