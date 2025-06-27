@@ -3,7 +3,6 @@ import data from '@emoji-mart/data'
 import { Picker } from 'emoji-mart'
 import './styles.css'
 
-// 定义 Toolbar 模块的接口
 interface QuillToolbar {
   container: HTMLElement
 }
@@ -36,7 +35,7 @@ export default class QuillEmojiModule {
     perLine: 8,
     navPosition: 'top',
     noCountryFlags: false,
-    dynamicWidth: true,
+    dynamicWidth: false,
   }
 
   private quill: Quill
@@ -71,9 +70,8 @@ export default class QuillEmojiModule {
           this.closeDialog()
         } else {
           this.openDialog()
+          this.isPickerVisible = true
         }
-
-        this.isPickerVisible = !this.isPickerVisible
       })
     }
   }
@@ -132,9 +130,10 @@ export default class QuillEmojiModule {
   public closeDialog() {
     this.isPickerVisible = false
     this.picker?.remove()
+    this.picker = null
   }
 
   public destroy() {
-    this.picker?.remove()
+    this.closeDialog()
   }
 }
