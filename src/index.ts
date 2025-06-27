@@ -70,7 +70,6 @@ export default class QuillEmojiModule {
           this.closeDialog()
         } else {
           this.openDialog()
-          this.isPickerVisible = true
         }
       })
     }
@@ -100,7 +99,15 @@ export default class QuillEmojiModule {
       this.picker.style.boxShadow = '0 4px 4px 0 rgba(0, 0, 0, 0.25)'
       this.picker.style.position = 'absolute'
       this.picker.style.zIndex = '1'
+
+      this.isPickerVisible = true
     }
+  }
+
+  public closeDialog() {
+    this.isPickerVisible = false
+    this.picker?.remove()
+    this.picker = null
   }
 
   private selectEmoji(emoji: any) {
@@ -125,12 +132,6 @@ export default class QuillEmojiModule {
     if (!but || !(but === event.target || (event.target instanceof Element && but.contains(event.target)))) {
       this.closeDialog()
     }
-  }
-
-  public closeDialog() {
-    this.isPickerVisible = false
-    this.picker?.remove()
-    this.picker = null
   }
 
   public destroy() {
