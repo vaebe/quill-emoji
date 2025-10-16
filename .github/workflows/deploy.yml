@@ -32,7 +32,7 @@ jobs:
       - name: Copy and rename root file
         run: |
           mkdir -p ./dist
-          cp example.html ./dist/index.html
+          cp index.html ./dist/index.html
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
