@@ -1,7 +1,7 @@
 {
   "name": "@quill-modules/emoji",
   "type": "module",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "exports": {
     ".": {
       "import": "./dist/emoji.js",
@@ -44,6 +44,11 @@
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.4",
     "vitest": "^3.2.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   },
   "lint-staged": {
     "*.ts": "pnpm run lint"
