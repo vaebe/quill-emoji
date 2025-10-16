@@ -25,9 +25,9 @@ declare class QuillEmojiModule {
     private init;
     private getButton;
     openDialog(): void;
+    closeDialog(): void;
     private selectEmoji;
     private onClickOutside;
-    closeDialog(): void;
     destroy(): void;
 }
 export default QuillEmojiModule;
