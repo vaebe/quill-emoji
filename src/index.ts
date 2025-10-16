@@ -111,18 +111,16 @@ export default class QuillEmojiModule {
   }
 
   private selectEmoji(emoji: any) {
-    const emojiDelta = this.quill.insertText(
-      this.quill.getSelection(true).index,
-      emoji.native,
-      'user',
-    )
+    const selection = this.quill.getSelection(true)
+    const insertIndex = selection.index
+
+    this.quill.insertText(insertIndex, emoji.native, 'user')
 
     this.closeDialog()
 
-    // Set Input position after the emoji
     setTimeout(() => {
-      this.quill.setSelection(this.quill.getSelection(true).index + emojiDelta.length())
-    })
+      this.quill.setSelection(insertIndex + emoji.native.length)
+    }, 0)
   }
 
   private onClickOutside(event: MouseEvent): void {
