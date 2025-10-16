@@ -106,17 +106,17 @@
       <h2 class="text-2xl font-bold text-gray-800 mb-4">📦 安装</h2>
       <p class="text-gray-600 mb-4">使用你喜欢的包管理器安装：</p>
       <div class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto mb-6">
-        <pre><code class="text-sm">npm install @quill-modules/emoji emoji-mart</code></pre>
+        <pre class="whitespace-pre-line text-sm">
+          npm install @quill-modules/emoji emoji-mart
+        </pre>
       </div>
       <div class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto">
-        <pre>
-          <code class="text-sm">
+        <pre class="whitespace-pre-line text-sm">
           # 或使用 yarn
           yarn add @quill-modules/emoji emoji-mart
 
           # 或使用 pnpm
           pnpm add @quill-modules/emoji emoji-mart
-          </code>
         </pre>
       </div>
     </section>
@@ -165,29 +165,27 @@
       <div class="mt-6">
         <h3 class="text-lg font-semibold text-gray-800 mb-3">基本用法</h3>
         <div class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto">
-          <pre>
-            <code class="text-sm">
-              // 注册模块
-              Quill.register('modules/emoji', QuillEmojiModule)
+          <pre class="text-sm -ml-20">
+            // 注册模块
+            Quill.register('modules/emoji', QuillEmojiModule)
 
-              const quill = new Quill('#editor', {
-                theme: 'snow',
-                modules: {
-                  toolbar: {
-                    container: [
-                      ['bold', 'italic', 'underline'],
-                      ['emoji']
-                    ]
-                  },
-                  emoji: {
-                    // 配置选项
-                    theme: 'light',
-                    locale: 'zh',
-                    set: 'native'
-                  }
+            const quill = new Quill('#editor', {
+              theme: 'snow',
+              modules: {
+                toolbar: {
+                  container: [
+                    ['bold', 'italic', 'underline'],
+                    ['emoji']
+                  ]
+                },
+                emoji: {
+                  // 配置选项
+                  theme: 'light',
+                  locale: 'zh',
+                  set: 'native'
                 }
-              });
-            </code>
+              }
+            });
           </pre>
         </div>
       </div>
