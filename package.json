@@ -1,7 +1,7 @@
 {
-  "name": "@quill-modules/emoji",
+  "name": "@vaebe/quill-emoji",
   "type": "module",
-  "version": "1.0.0",
+  "version": "0.0.2",
   "exports": {
     ".": {
       "import": "./dist/emoji.js",
@@ -24,22 +24,20 @@
     "test:coverage": "vitest --coverage",
     "prepare": "husky install"
   },
-  "dependencies": {
-    "@emoji-mart/data": "^1.2.1",
-    "emoji-mart": "^5.6.0",
-    "quill": "^2.0.3"
-  },
   "devDependencies": {
     "@antfu/eslint-config": "^3.16.0",
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "@emoji-mart/data": "^1.2.1",
     "@types/node": "^22.15.31",
     "@vitest/coverage-v8": "^3.2.3",
     "camelcase": "^8.0.0",
     "changelogen": "^0.6.1",
+    "emoji-mart": "^5.6.0",
     "eslint": "^9.28.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
+    "quill": "^2.0.3",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vite-plugin-dts": "^4.5.4",
