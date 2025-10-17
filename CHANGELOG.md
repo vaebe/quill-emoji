@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.5
+
+[compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.4...v0.0.5)
+
+### 🚀 Enhancements
+
+- 打包配置文档修改 ([70c08f4](https://github.com/vaebe/quill-emoji/commit/70c08f4))
+
+### ❤️ Contributors
+
+- Vae <18137693952@163.com>
+
 ## v0.0.4
 
 [compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.3...v0.0.4)
