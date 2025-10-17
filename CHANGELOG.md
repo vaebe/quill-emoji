@@ -1,6 +1,20 @@
 # Changelog
 
 
+## v0.0.4
+
+[compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.3...v0.0.4)
+
+### 🏡 Chore
+
+- 更新包的 private 设置 ([4c6cb56](https://github.com/vaebe/quill-emoji/commit/4c6cb56))
+- 更新包的 publishConfig 设置 ([754671d](https://github.com/vaebe/quill-emoji/commit/754671d))
+- 打包配置修改 ([231a440](https://github.com/vaebe/quill-emoji/commit/231a440))
+
+### ❤️ Contributors
+
+- Vae <18137693952@163.com>
+
 ## v0.0.3
 
 [compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.2...v0.0.3)
