@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quill Emoji Module - 为 Quill 2.0 编辑器开发的表情符号模块</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emoji-mart@5.6.0/dist/browser.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vaebe/quill-emoji@0.0.7/dist/quill-emoji.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@vaebe/quill-emoji@0.0.7/dist/quill-emoji.umd.min.js"></script>
+  
+  <style>
+    .editor-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .ql-toolbar {
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+    }
+
+    .ql-container {
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+
+    .card {
+      transition: box-shadow 0.3s ease;
+      border: 1px solid var(--border);
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    pre {
+      background: #f8f9fa !important;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 16px !important;
+      overflow-x: auto;
+    }
+
+    .code-block-header {
+      background: #f3f4f6;
+      color: var(--gray);
+      padding: 8px 16px;
+      margin-bottom: 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+    }
+
+    th {
+      background: #f8f9fa;
+      font-weight: 600;
+      text-align: left;
+    }
+
+    td, th {
+      padding: 12px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    @media (max-width: 768px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+
+      pre {
+        font-size: 0.875rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+  <!-- 页眉 -->
+  <header class="bg-white border-b border-gray-200 py-8">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">Quill Emoji Module</h1>
+      <p class="text-gray-600">为 Quill 2.0 编辑器开发的表情符号模块</p>
+    </div>
+  </header>
+
+  <!-- 主要内容区域 -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    <!-- 编辑器演示区域 -->
+    <section class="mb-12">
+      <div class="bg-white rounded-lg shadow-sm p-6 card text-center">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">📝 编辑器演示</h2>
+        <p class="text-gray-600 mb-6">在下方编辑器中点击工具栏的表情符号按钮体验功能</p>
+        <div class="editor-container">
+          <div id="editor"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 特性介绍区域 -->
+    <section class="mb-12 bg-white rounded-lg shadow-sm p-6 card">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">✨ 特性</h2>
+      <div class="feature-grid grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="flex items-start space-x-3">
+          <span class="text-xl">✨</span>
+          <div>
+            <h3 class="font-medium text-gray-800">支持 Quill 2.0</h3>
+            <p class="text-gray-600 text-sm">与最新版本完全兼容</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-xl">🎨</span>
+          <div>
+            <h3 class="font-medium text-gray-800">emoji-mart 选择器</h3>
+            <p class="text-gray-600 text-sm">丰富的表情选择和搜索</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-xl">📱</span>
+          <div>
+            <h3 class="font-medium text-gray-800">响应式设计</h3>
+            <p class="text-gray-600 text-sm">适配移动和桌面设备</p>
+          </div>
+        </div>
+        <div class="flex items-start space-x-3">
+          <span class="text-xl">🔧</span>
+          <div>
+            <h3 class="font-medium text-gray-800">TypeScript 支持</h3>
+            <p class="text-gray-600 text-sm">完善的类型定义</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 使用说明 -->
+    <section class="mb-12 bg-white rounded-lg shadow-sm p-6 card">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">📦 安装</h2>
+      <p class="text-gray-600 mb-4">使用包管理器安装：</p>
+      <div class="bg-gray-50 rounded-lg overflow-x-auto mb-4">
+        <div class="code-block-header">npm</div>
+        <pre class="whitespace-pre-line text-sm">
+npm install @vaebe/quill-emoji emoji-mart quill
+        </pre>
+      </div>
+
+      <div class="bg-gray-50 rounded-lg overflow-x-auto mb-4">
+        <div class="code-block-header">yarn</div>
+        <pre class="whitespace-pre-line text-sm">
+yarn add @vaebe/quill-emoji emoji-mart quill
+        </pre>
+      </div>
+
+      <div class="bg-gray-50 rounded-lg overflow-x-auto">
+        <div class="code-block-header">pnpm</div>
+        <pre class="whitespace-pre-line text-sm">
+pnpm add @vaebe/quill-emoji emoji-mart quill
+        </pre>
+      </div>
+    </section>
+
+    <!-- API 配置说明 -->
+    <section class="mb-12 bg-white rounded-lg shadow-sm p-6 card">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4">⚙️ 配置选项</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="px-3 py-2 text-left">选项</th>
+              <th class="px-3 py-2 text-left">类型</th>
+              <th class="px-3 py-2 text-left">默认值</th>
+              <th class="px-3 py-2 text-left">描述</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-3 py-2 font-mono text-sm">theme</td>
+              <td class="px-3 py-2 text-sm">string</td>
+              <td class="px-3 py-2 text-sm">"light"</td>
+              <td class="px-3 py-2 text-sm">'light' 或 'dark'</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-mono text-sm">locale</td>
+              <td class="px-3 py-2 text-sm">string</td>
+              <td class="px-3 py-2 text-sm">"zh"</td>
+              <td class="px-3 py-2 text-sm">语言设置</td>
+            </tr>
+            <tr>
+              <td class="px-3 py-2 font-mono text-sm">set</td>
+              <td class="px-3 py-2 text-sm">string</td>
+              <td class="px-3 py-2 text-sm">"native"</td>
+              <td class="px-3 py-2 text-sm">表情集类型</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6">
+        <h3 class="text-lg font-medium text-gray-800 mb-3">基本用法</h3>
+        <div class="bg-gray-50 rounded-lg overflow-x-auto">
+          <div class="code-block-header">JavaScript</div>
+          <pre class="text-sm">
+import QuillEmojiModule from '@vaebe/quill-emoji'
+import Quill from 'quill'
+
+// 注册模块
+Quill.register('modules/emoji', QuillEmojiModule)
+
+const quill = new Quill('#editor', {
+  modules: {
+    // ...
+    emoji: {
+      theme: 'light',
+      locale: 'zh',
+      set: 'native',
+      previewPosition: 'bottom',
+      navPosition: 'top'
+    }
+  }
+})
+          </pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-gray-800 text-white py-6">
+    <div class="max-w-6xl mx-auto px-4 text-center">
+      <p class="text-sm">Quill Emoji Module - MIT License</p>
+    </div>
+  </footer>
+
+  <script type="module">
+    let globalQuill;
+
+    // 完整注册模块
+    Quill.register('modules/emoji', QuillEmoji);
+
+    globalQuill = new Quill('#editor', {
+      theme: 'snow',
+      modules: {
+        toolbar: [
+          ['bold', 'italic', 'underline', 'strike'],
+          ['blockquote', 'code-block'],
+          [{ 'header': 1 }, { 'header': 2 }],
+          [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+          [{ 'script': 'sub' }, { 'script': 'super' }],
+          [{ 'indent': '-1' }, { 'indent': '+1' }],
+          [{ 'direction': 'rtl' }],
+          [{ 'size': ['small', false, 'large', 'huge'] }],
+          [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          [{ 'color': [] }, { 'background': [] }],
+          [{ 'font': [] }],
+          [{ 'align': [] }],
+          ['clean', 'link', 'image'] // 添加 emoji 按钮到工具栏
+        ],
+        emoji: {
+          theme: 'light',
+          locale: 'zh',
+          set: 'native',
+          previewPosition: 'bottom',
+          navPosition: 'top'
+        }
+      },
+      placeholder: '在这里输入文本，点击工具栏的表情符号按钮体验 emoji-mart 组件...'
+    });
+  </script>
+</body>
+
+</html>
