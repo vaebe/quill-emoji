@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.3
+
+[compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.2...v0.0.3)
+
+### 🏡 Chore
+
+- @emoji-mart/data emoji-mart quil 设置为开发依赖 ([b625a64](https://github.com/vaebe/quill-emoji/commit/b625a64))
+
+### ❤️ Contributors
+
+- Vae <18137693952@163.com>
+
 ## v0.0.2
 
 
