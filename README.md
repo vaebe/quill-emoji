@@ -91,28 +91,6 @@ const quill = new Quill('#editor', {
 | noCountryFlags | boolean | false | 是否隐藏国旗表情 |
 | dynamicWidth | boolean | true | 是否使用动态宽度 |
 
-## API
-
-### 方法
-
-```javascript
-// 获取模块实例
-const emojiModule = quill.getModule('emoji')
-
-// 插入表情
-emojiModule.insertEmoji('😀')
-
-// 手动显示表情选择器
-emojiModule.showEmojiPickerManually()
-
-// 销毁模块（清理事件和DOM元素）
-emojiModule.destroy()
-```
-
-## 示例
-
-查看 `examples` 目录中的示例文件。
-
 ## 构建项目
 
 ```bash
