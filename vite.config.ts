@@ -9,7 +9,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/index.ts'),
       formats: ['es', 'cjs', 'umd'],
       name: 'QuillEmoji',
-      fileName: 'quill-emoji',
+      fileName: (format) => `quill-emoji.${format}.js`,
     },
     rollupOptions: {
       external: ['quill', 'emoji-mart', '@emoji-mart/data'],

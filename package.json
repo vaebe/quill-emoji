@@ -8,12 +8,12 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/quill-emoji.js",
-      "require": "./dist/quill-emoji.cjs"
+      "import": "./dist/quill-emoji.es.js",
+      "require": "./dist/quill-emoji.umd.js"
     }
   },
-  "main": "./dist/quill-emoji.js",
-  "module": "./dist/quill-emoji.js",
+  "main": "./dist/quill-emoji.umd.js",
+  "module": "./dist/quill-emoji.es.js",
   "types": "./dist/quill-emoji.d.ts",
   "files": [
     "dist"
