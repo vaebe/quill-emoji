@@ -3,6 +3,9 @@
   "type": "module",
   "version": "0.0.3",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": {
       "import": "./dist/emoji.js",
