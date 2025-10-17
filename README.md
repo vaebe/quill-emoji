@@ -14,11 +14,11 @@
 ## 安装
 
 ```bash
-npm install @quill-modules/emoji emoji-mart
+npm install @vaebe/quill-emoji emoji-mart
 # 或
-yarn add @quill-modules/emoji emoji-mart
+yarn add @vaebe/quill-emoji emoji-mart
 # 或
-pnpm add @quill-modules/emoji emoji-mart
+pnpm add @vaebe/quill-emoji emoji-mart
 ```
 
 ## 使用方法
@@ -57,7 +57,7 @@ pnpm add @quill-modules/emoji emoji-mart
 ### 使用 ES 模块
 
 ```javascript
-import QuillEmojiModule from '@quill-modules/emoji'
+import QuillEmojiModule from '@vaebe/quill-emoji'
 import Quill from 'quill'
 
 // 注册模块

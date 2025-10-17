@@ -16,7 +16,9 @@
   "module": "./dist/quill-emoji.js",
   "types": "./dist/quill-emoji.d.ts",
   "files": [
-    "dist"
+    "README.md",
+    "dist",
+    "package.json"
   ],
   "scripts": {
     "dev": "vite",
