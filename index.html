@@ -10,8 +10,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.min.css">
   <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/emoji-mart@5.6.0/dist/browser.min.js"></script>
-  <link rel="stylesheet" href="./dist/emoji.css">
-  <script src="./dist/emoji.umd.cjs"></script>
+  <link rel="stylesheet" href="./dist/quill-emoji.css">
+  <script src="./dist/quill-emoji.umd.cjs"></script>
   <style>
     .editor-container {
       max-width: 800px;
@@ -203,7 +203,7 @@
     let globalQuill;
 
     // 完整注册模块
-    Quill.register('modules/emoji', Emoji);
+    Quill.register('modules/emoji', QuillEmoji);
 
     globalQuill = new Quill('#editor', {
       theme: 'snow',
@@ -221,7 +221,7 @@
           [{ 'color': [] }, { 'background': [] }],
           [{ 'font': [] }],
           [{ 'align': [] }],
-          ['clean', 'link', 'image', 'emoji'] // 添加 emoji 按钮到工具栏
+          ['clean', 'link', 'image'] // 添加 emoji 按钮到工具栏
         ],
         emoji: {
           theme: 'light',

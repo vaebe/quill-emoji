@@ -8,13 +8,13 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/emoji.js",
-      "require": "./dist/emoji.cjs"
+      "import": "./dist/quill-emoji.js",
+      "require": "./dist/quill-emoji.cjs"
     }
   },
-  "main": "./dist/emoji.cjs",
-  "module": "./dist/emoji.js",
-  "types": "./dist/emoji.d.ts",
+  "main": "./dist/quill-emoji.cjs",
+  "module": "./dist/quill-emoji.js",
+  "types": "./dist/quill-emoji.d.ts",
   "files": [
     "dist"
   ],
