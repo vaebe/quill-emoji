@@ -1,6 +1,18 @@
 # Changelog
 
 
+## v0.0.6
+
+[compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.5...v0.0.6)
+
+### 🏡 Chore
+
+- 打包配置修改 ([146e427](https://github.com/vaebe/quill-emoji/commit/146e427))
+
+### ❤️ Contributors
+
+- Vae <18137693952@163.com>
+
 ## v0.0.5
 
 [compare changes](https://github.com/vaebe/quill-emoji/compare/v0.0.4...v0.0.5)
