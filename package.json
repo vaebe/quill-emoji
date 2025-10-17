@@ -2,6 +2,7 @@
   "name": "@vaebe/quill-emoji",
   "type": "module",
   "version": "0.0.3",
+  "private": false,
   "exports": {
     ".": {
       "import": "./dist/emoji.js",
